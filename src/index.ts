@@ -280,9 +280,7 @@ window.addEventListener('load', function () {
 
     // create videos
     getStories().then((res: any) => {
-        console.log(res)
         videos = res.map(({ story_url }: any) => story_url);
-        console.log(videos)
         init();
     }).catch(err => console.log(err));
 });
