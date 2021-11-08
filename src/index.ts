@@ -16,17 +16,8 @@ let videos: string[] = [];
 async function getStories(): Promise<string[]> {
     const script = document.getElementById('storyflow-script');
     const user = script?.getAttribute("data-storyflow-user");
-    const stories = await fetch(`https://storyflow.video/api/stories/${user}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        mode: 'no-cors'
-    });
-    if (stories.ok) {
-        return await stories.json();
-    } else {
-        console.log(stories);
-        throw new Error('[Stroyflow]: failed to get user stories');
-    }
+    const stories = await fetch(`https://storyflow.video/api/stories/${user}`);
+    return await stories.json();
 };
 
 // create globalWrapper div
@@ -279,8 +270,10 @@ window.addEventListener('load', function () {
     // dragElement(globalWrapper);
 
     // create videos
-    getStories().then((res: any) => {
-        videos = res.map(({ story_url }: any) => story_url);
-        init();
-    }).catch(err => console.log(err));
+    getStories()
+        .then((res: any) => {
+            videos = res.map(({ story_url }: any) => story_url);
+            init();
+        })
+        .catch(err => console.log(err));
 });
