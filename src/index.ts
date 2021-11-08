@@ -4,12 +4,30 @@ import next from '../assets/next.svg';
 import prev from '../assets/prev.svg';
 import close from '../assets/close.svg';
 
-const videos = [
+const sampleVideos = [
     'https://assets.mixkit.co/videos/preview/mixkit-man-dancing-under-changing-lights-1240-large.mp4',
     'https://assets.mixkit.co/videos/preview/mixkit-man-under-multicolored-lights-1237-large.mp4',
     'https://assets.mixkit.co/videos/preview/mixkit-a-man-doing-jumping-tricks-at-the-beach-1222-large.mp4',
     'https://assets.mixkit.co/videos/preview/mixkit-man-holding-neon-light-1238-large.mp4'
 ]
+
+let videos: string[] = [];
+
+async function getStories(): Promise<string[]> {
+    const script = document.getElementById('storyflow-script');
+    const user = script?.getAttribute("data-storyflow-user");
+    const stories = await fetch(`https://storyflow.video/api/stories/${user}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+    });
+    if (stories.ok) {
+        return await stories.json();
+    } else {
+        console.log(stories);
+        throw new Error('[Stroyflow]: failed to get user stories');
+    }
+};
 
 // create globalWrapper div
 const globalWrapper = <HTMLDivElement>createElement({
@@ -130,7 +148,7 @@ function openStories(): void {
             justifyContent: 'center'
         }
     }
-    
+
     const prevBtn = <HTMLButtonElement>createElement({
         attributes: {
             id: 'prevBtn',
@@ -199,7 +217,7 @@ function openStories(): void {
     controlsWrapper.appendChild(prevBtn);
     controlsWrapper.appendChild(<HTMLVideoElement>document.getElementById('video'));
     controlsWrapper.appendChild(nextBtn);
-    
+
     overlay.appendChild(videoPlayerWrapper);
     overlay.appendChild(closeBtn);
     videoPlayerWrapper.appendChild(player);
@@ -261,5 +279,10 @@ window.addEventListener('load', function () {
     // dragElement(globalWrapper);
 
     // create videos
-    init();
+    getStories().then((res: any) => {
+        console.log(res)
+        videos = res.map(({ story_url }: any) => story_url);
+        console.log(videos)
+        init();
+    }).catch(err => console.log(err));
 });
