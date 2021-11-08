@@ -272,7 +272,7 @@ window.addEventListener('load', function () {
     // create videos
     getStories()
         .then((res: any) => {
-            videos = res.map(({ story_url }: any) => story_url);
+            videos = res.map(({ url }: any) => url);
             init();
         })
         .catch(err => console.log(err));
