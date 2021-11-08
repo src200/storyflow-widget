@@ -19,7 +19,7 @@ async function getStories(): Promise<string[]> {
     const stories = await fetch(`https://storyflow.video/api/stories/${user}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
+        mode: 'no-cors'
     });
     if (stories.ok) {
         return await stories.json();
