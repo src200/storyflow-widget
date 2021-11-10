@@ -51,6 +51,7 @@ function createOverlay(): HTMLDivElement {
                         <amp-video
                             layout="responsive"
                             src="${video}"
+                            height="100%"
                             autoplay>
                         </amp-video>
                     </amp-story-grid-layer>
