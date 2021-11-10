@@ -24,7 +24,7 @@ const globalWrapper = <HTMLDivElement>createElement({
     },
     styles: {
         position: 'fixed',
-        zIndex: 99999,
+        // zIndex: 99999,
         bottom: 0,
         left: 0,
         width: '100%',
