@@ -21,14 +21,6 @@ async function getStories(): Promise<string[]> {
 const globalWrapper = <HTMLDivElement>createElement({
     attributes: {
         class: 'globalWrapper'
-    },
-    styles: {
-        // position: 'fixed',
-        // zIndex: 99999,
-        bottom: 0,
-        left: 0,
-        width: '100%',
-        height: '100%'
     }
 });
 
