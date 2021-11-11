@@ -86,7 +86,7 @@ export function enableBtn(element: HTMLButtonElement): void {
   element.disabled = false;
 }
 
-export function loadJS(src: string) {
+export function loadJS(src: string, target: HTMLElement | ShadowRoot): void {
   // DOM: Create the script element
   var jsElm = document.createElement("script");
   // set the type attribute
@@ -96,5 +96,5 @@ export function loadJS(src: string) {
   // make the script element load file
   jsElm.src = src;
   // finally insert the element to the body element in order to load the script
-  document.body.appendChild(jsElm);
+  target.appendChild(jsElm);
 }

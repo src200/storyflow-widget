@@ -1,4 +1,5 @@
 import { createElement, removeElementbyId, loadJS, createImage } from './dom';
+import StoryflowWidget from './storyflow-widget';
 import close from '../assets/close.svg';
 
 // const sampleVideos = [
@@ -21,8 +22,13 @@ async function getStories(): Promise<string[]> {
 const globalWrapper = <HTMLDivElement>createElement({
     attributes: {
         class: 'globalWrapper'
-    }
+    },
+    innerHTML: `
+        <storyflow-widget></storyflow-widget>
+        `
 });
+
+const storyflowWidget = document.createElement('storyflow-widget');
 
 // create overlay
 function createOverlay(): HTMLDivElement {
@@ -105,7 +111,7 @@ function openStories(): void {
     });
     closeBtn.appendChild(createImage(close));
     overlay.appendChild(closeBtn);
-    globalWrapper.appendChild(overlay);
+    storyflowWidget.appendChild(overlay);
 }
 
 // start from here
@@ -155,26 +161,53 @@ function init(): void {
     video.muted = true;
     video.onloadedmetadata = e => video.play();
     videoWrapper.appendChild(video);
-    globalWrapper.appendChild(videoWrapper);
+    storyflowWidget.appendChild(videoWrapper);
 
     // finally append it to body
-    document.body.appendChild(globalWrapper);
+    document.body.appendChild(storyflowWidget);
 }
 
 // onload init
 window.addEventListener('load', function () {
     // make the globalWrapper draggable
     // dragElement(globalWrapper);
+    window.customElements.define('storyflow-widget', StoryflowWidget);
+    const storyflowWidget = document.createElement('storyflow-widget');
 
-    loadJS('https://cdn.ampproject.org/v0.js');
-    loadJS('https://cdn.ampproject.org/v0/amp-story-1.0.js');
-    loadJS('https://cdn.ampproject.org/v0/amp-video-0.1.js');
+    const iframe = <HTMLIFrameElement>createElement({
+        type: 'iframe',
+        attributes: {
+            id: 'storyflow-iframe',
+            width: '100%',
+            height: '100%',
+            src: '',
+            frameborder: '0',
+        },
+        styles: {
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            zIndex: 99999
+
+        }
+    });
+
+
+    document.body.appendChild(iframe);
+    this.setTimeout(() => {
+        if (iframe.contentWindow) {
+            iframe.contentWindow.document.body.appendChild(storyflowWidget);
+        }
+    }, 10);
+
+    // loadJS('https://cdn.ampproject.org/v0/amp-story-1.0.js');
+    // loadJS('https://cdn.ampproject.org/v0/amp-video-0.1.js');
 
     // create videos
-    getStories()
-        .then((res: any) => {
-            videos = res.map(({ url }: any) => url);
-            init();
-        })
-        .catch(err => console.log(err));
+    // getStories()
+    //     .then((res: any) => {
+    //         videos = res.map(({ url }: any) => url);
+    //         init();
+    //     })
+    //     .catch(err => console.log(err));
 });
