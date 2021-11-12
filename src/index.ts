@@ -105,7 +105,7 @@ function openStories(): void {
             position: 'absolute',
             margin: '10px',
             top: 2,
-            right: 0
+            left: 0
         },
         eventHandlers: {
             click: (e: MouseEvent) => {
