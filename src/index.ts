@@ -1,13 +1,6 @@
 import { createElement, removeElementbyId, loadJS, createImage } from './dom';
 import close from '../assets/close.svg';
 
-// const sampleVideos = [
-//     'https://assets.mixkit.co/videos/preview/mixkit-man-dancing-under-changing-lights-1240-large.mp4',
-//     'https://assets.mixkit.co/videos/preview/mixkit-man-under-multicolored-lights-1237-large.mp4',
-//     'https://assets.mixkit.co/videos/preview/mixkit-a-man-doing-jumping-tricks-at-the-beach-1222-large.mp4',
-//     'https://assets.mixkit.co/videos/preview/mixkit-man-holding-neon-light-1238-large.mp4'
-// ]
-
 let videos: string[] = [];
 
 async function getStories(): Promise<string[]> {
@@ -21,6 +14,23 @@ async function getStories(): Promise<string[]> {
 const globalWrapper = <HTMLDivElement>createElement({
     attributes: {
         class: 'globalWrapper'
+    }
+});
+
+const iframe = <HTMLIFrameElement>createElement({
+    type: 'iframe',
+    attributes: {
+        id: 'storyflow-iframe',
+        name: 'storyflow-iframe',
+        frameborder: '0',
+        sandbox: ' allow-popups-to-escape-sandbox allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation'
+    },
+    styles: {
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        zIndex: 99999
+
     }
 });
 
@@ -42,7 +52,7 @@ function createOverlay(): HTMLDivElement {
             zIndex: 3
         },
         innerHTML: `
-        <amp-story standalone
+        <amp-story standalone supports-landscape
             title="Storyflow AMP"
             publisher="Storyflow">
             ${videos.map((video, index) => `
@@ -99,13 +109,15 @@ function openStories(): void {
         },
         eventHandlers: {
             click: (e: MouseEvent) => {
-                removeElementbyId('overlay');
+                iframe.contentWindow && iframe.contentWindow.document.getElementById('overlay')?.remove();
             }
         }
     });
     closeBtn.appendChild(createImage(close));
     overlay.appendChild(closeBtn);
     globalWrapper.appendChild(overlay);
+    iframe.width = '100%';
+    iframe.height = '100%';
 }
 
 // start from here
@@ -157,19 +169,23 @@ function init(): void {
     videoWrapper.appendChild(video);
     globalWrapper.appendChild(videoWrapper);
 
+    setTimeout(() => {
+        if (iframe.contentWindow) {
+            loadJS('https://cdn.ampproject.org/v0.js', iframe.contentWindow.document);
+            loadJS('https://cdn.ampproject.org/v0/amp-story-1.0.js', iframe.contentWindow.document);
+            loadJS('https://cdn.ampproject.org/v0/amp-video-0.1.js', iframe.contentWindow.document);
+            console.log(iframe.contentWindow)
+            // fix: https://groups.google.com/g/amphtml-discuss/c/88Kti6QNCLQ?pli=1
+            iframe.contentWindow.document.write('<span></span>');
+            iframe.contentWindow.document.body.appendChild(globalWrapper);
+        }
+    }, 0);
     // finally append it to body
-    document.body.appendChild(globalWrapper);
+    document.body.appendChild(iframe);
 }
 
 // onload init
 window.addEventListener('load', function () {
-    // make the globalWrapper draggable
-    // dragElement(globalWrapper);
-
-    loadJS('https://cdn.ampproject.org/v0.js');
-    loadJS('https://cdn.ampproject.org/v0/amp-story-1.0.js');
-    loadJS('https://cdn.ampproject.org/v0/amp-video-0.1.js');
-
     // create videos
     getStories()
         .then((res: any) => {

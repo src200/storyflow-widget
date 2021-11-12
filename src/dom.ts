@@ -86,15 +86,16 @@ export function enableBtn(element: HTMLButtonElement): void {
   element.disabled = false;
 }
 
-export function loadJS(src: string) {
+export function loadJS(src: string, doc: Document): void {
+  doc = doc || document;
   // DOM: Create the script element
-  var jsElm = document.createElement("script");
+  var script = doc.createElement("script");
   // set the type attribute
-  jsElm.type = "text/javascript";
+  script.type = "text/javascript";
   // load async
-  jsElm.async = true;
+  script.async = true;
   // make the script element load file
-  jsElm.src = src;
+  script.src = src;
   // finally insert the element to the body element in order to load the script
-  document.body.appendChild(jsElm);
+  doc.head.appendChild(script);
 }
