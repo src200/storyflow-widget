@@ -1,7 +1,16 @@
-import { createElement, removeElementbyId, loadJS, createImage } from './dom';
+import { createElement, removeElementbyId, generateStoryMarkUp, loadJS, createImage } from './dom';
 import close from '../assets/close.svg';
 
-let videos: string[] = [];
+interface Media {
+    name: string,
+    description: string,
+    type: string,
+    url: string,
+    media_id: string,
+    user_id: string
+};
+
+let media: Media[] = [];
 
 async function getStories(): Promise<string[]> {
     const script = document.getElementById('storyflow-script');
@@ -34,6 +43,7 @@ const iframe = <HTMLIFrameElement>createElement({
     }
 });
 
+
 // create overlay
 function createOverlay(): HTMLDivElement {
     const overlayContainer = <HTMLDivElement>createElement({
@@ -55,16 +65,10 @@ function createOverlay(): HTMLDivElement {
         <amp-story standalone
             title="Storyflow AMP"
             publisher="Storyflow">
-            ${videos.map((video, index) => `
+            ${media.map((media, index) => `
                 <amp-story-page id="${index}">
                     <amp-story-grid-layer template="fill">
-                        <amp-video
-                            layout="responsive"
-                            src="${video}"
-                            height="480"
-                            width="270"
-                            autoplay>
-                        </amp-video>
+                        ${generateStoryMarkUp(media)}
                     </amp-story-grid-layer>
                 </amp-story-page>`
         )} 
@@ -155,7 +159,7 @@ function init(): void {
         },
         attributes: {
             id: 'video',
-            src: videos[0],
+            src: media[0].url,
             height: '60',
             width: '60'
         },
@@ -176,8 +180,14 @@ function init(): void {
             loadJS('https://cdn.ampproject.org/v0.js', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-story-1.0.js', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-video-0.1.js', iframe.contentWindow.document);
+            loadJS('https://cdn.ampproject.org/v0/amp-youtube-0.1.js', iframe.contentWindow.document);
+            loadJS('https://cdn.ampproject.org/v0/amp-instagram-0.1.js', iframe.contentWindow.document);
+            loadJS('https://cdn.ampproject.org/v0/amp-twitter-0.1.js', iframe.contentWindow.document);
+            loadJS('https://cdn.ampproject.org/v0/amp-tiktok-0.1.js', iframe.contentWindow.document);
+
             // fix: https://groups.google.com/g/amphtml-discuss/c/88Kti6QNCLQ?pli=1
             iframe.contentWindow.document.write('<span></span>');
+
             iframe.contentWindow.document.body.appendChild(globalWrapper);
         }
     }, 0);
@@ -187,10 +197,9 @@ function init(): void {
 
 // onload init
 window.addEventListener('load', function () {
-    // create videos
     getStories()
         .then((res: any) => {
-            videos = res.map(({ url }: any) => url);
+            media = res;
             init();
         })
         .catch(err => console.log(err));

@@ -99,3 +99,45 @@ export function loadJS(src: string, doc: Document): void {
   // finally insert the element to the body element in order to load the script
   doc.head.appendChild(script);
 }
+
+// generate story markup based on media type
+export function generateStoryMarkUp(media: any): string {
+  let storyMarkup = '';
+
+  switch (media.type) {
+    case 'video':
+      storyMarkup = `
+        <amp-video
+          layout="responsive"
+          src="${media.url}"
+          height="480"
+          width="270"
+          autoplay>
+      </amp-video>
+      `;
+      break;
+    case 'image':
+      storyMarkup = `
+        <amp-img
+          src="${media.url}"
+          height="480"
+          width="270"
+          layout="responsive">
+        </amp-img>
+      `;
+      break;
+    case 'youtube':
+      storyMarkup = `
+        <amp-youtube
+          data-videoid="${media.media_id}"
+          layout="responsive"
+          width="480"
+          height="270">
+        </amp-youtube>
+      `;
+      break;
+    default:
+      break;
+  }
+  return storyMarkup;
+}
