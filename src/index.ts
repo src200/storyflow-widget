@@ -110,6 +110,8 @@ function openStories(): void {
         eventHandlers: {
             click: (e: MouseEvent) => {
                 iframe.contentWindow && iframe.contentWindow.document.getElementById('overlay')?.remove();
+                iframe.width = '';
+                iframe.height = '';
             }
         }
     });
