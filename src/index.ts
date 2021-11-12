@@ -52,7 +52,7 @@ function createOverlay(): HTMLDivElement {
             zIndex: 3
         },
         innerHTML: `
-        <amp-story standalone supports-landscape
+        <amp-story standalone
             title="Storyflow AMP"
             publisher="Storyflow">
             ${videos.map((video, index) => `
