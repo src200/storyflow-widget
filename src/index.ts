@@ -174,7 +174,6 @@ function init(): void {
             loadJS('https://cdn.ampproject.org/v0.js', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-story-1.0.js', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-video-0.1.js', iframe.contentWindow.document);
-            console.log(iframe.contentWindow)
             // fix: https://groups.google.com/g/amphtml-discuss/c/88Kti6QNCLQ?pli=1
             iframe.contentWindow.document.write('<span></span>');
             iframe.contentWindow.document.body.appendChild(globalWrapper);
