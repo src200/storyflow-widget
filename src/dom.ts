@@ -100,6 +100,28 @@ export function loadJS(src: string, doc: Document): void {
   doc.head.appendChild(script);
 }
 
+function generateCTALink(url: string, text: string = 'Call to action'): string {
+  return `<amp-story-cta-layer>
+        <a href="${url}"
+          style="
+                position: absolute;
+                bottom: 5px;
+                left: 5px;
+                color: white;
+                font-family: sans-serif;
+                font-size: 14px;
+                font-weight: bold;
+                text-align: center;
+                text-decoration: none;
+                border-radius: 10px;
+                cursor: pointer;
+                background-color:#ff7e1d;
+                padding:8px;">
+          ${text}
+        </a>
+      </amp-story-cta-layer>`;
+}
+
 // generate story markup based on media type
 export function generateStoryMarkUp(media: any): string {
   let storyMarkup = '';
@@ -114,6 +136,7 @@ export function generateStoryMarkUp(media: any): string {
           width="270"
           autoplay>
       </amp-video>
+      ${media.ctaLink && generateCTALink(media.ctaLink, media.ctaText)}
       `;
       break;
     case 'image':
@@ -124,6 +147,7 @@ export function generateStoryMarkUp(media: any): string {
           width="270"
           layout="responsive">
         </amp-img>
+        ${media.ctaLink && generateCTALink(media.ctaLink, media.ctaText)}
       `;
       break;
     case 'youtube':
@@ -134,6 +158,29 @@ export function generateStoryMarkUp(media: any): string {
           width="480"
           height="270">
         </amp-youtube>
+        ${media.ctaLink && generateCTALink(media.ctaLink, media.ctaText)}
+      `;
+      break;
+    case 'instagram':
+      storyMarkup = `
+        <amp-instagram
+          data-shortcode="${media.media_id}"
+          layout="responsive"
+          width="480"
+          height="270">
+        </amp-instagram>
+        ${media.ctaLink && generateCTALink(media.ctaLink, media.ctaText)}
+      `;
+      break;
+    case 'twitter':
+      storyMarkup = `
+        <amp-twitter
+          data-tweetid="${media.media_id}"
+          layout="responsive"
+          width="480"
+          height="270">
+        </amp-twitter>
+        ${media.ctaLink && generateCTALink(media.ctaLink, media.ctaText)}
       `;
       break;
     default:

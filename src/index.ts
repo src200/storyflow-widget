@@ -109,7 +109,8 @@ function openStories(): void {
             position: 'absolute',
             margin: '10px',
             top: 2,
-            left: 0
+            left: 0,
+            zIndex: 50
         },
         eventHandlers: {
             click: (e: MouseEvent) => {
@@ -181,9 +182,9 @@ function init(): void {
             loadJS('https://cdn.ampproject.org/v0/amp-story-1.0.js', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-video-0.1.js', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-youtube-0.1.js', iframe.contentWindow.document);
-            loadJS('https://cdn.ampproject.org/v0/amp-instagram-0.1.js', iframe.contentWindow.document);
-            loadJS('https://cdn.ampproject.org/v0/amp-twitter-0.1.js', iframe.contentWindow.document);
-            loadJS('https://cdn.ampproject.org/v0/amp-tiktok-0.1.js', iframe.contentWindow.document);
+            // loadJS('https://cdn.ampproject.org/v0/amp-instagram-0.1.js', iframe.contentWindow.document);
+            // loadJS('https://cdn.ampproject.org/v0/amp-twitter-0.1.js', iframe.contentWindow.document);
+            // loadJS('https://cdn.ampproject.org/v0/amp-tiktok-0.1.js', iframe.contentWindow.document);
 
             // fix: https://groups.google.com/g/amphtml-discuss/c/88Kti6QNCLQ?pli=1
             iframe.contentWindow.document.write('<span></span>');
