@@ -136,7 +136,7 @@ export function generateStoryMarkUp(media: any): string {
           width="270"
           autoplay>
       </amp-video>
-      ${media.ctaLink && generateCTALink(media.ctaLink, media.ctaText)}
+      ${media.cta_link && generateCTALink(media.cta_link, media.cta_text)}
       `;
       break;
     case 'image':
