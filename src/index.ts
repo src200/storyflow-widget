@@ -1,4 +1,4 @@
-import { createElement, removeElementbyId, generateStoryMarkUp, loadJS, createImage } from './dom';
+import { createElement, removeElementbyId, generateStoryExtensionMarkUp, loadJS, loadCSS, createImage } from './dom';
 import close from '../assets/close.svg';
 
 interface Media {
@@ -44,8 +44,12 @@ const iframe = <HTMLIFrameElement>createElement({
 });
 
 
+
 // create overlay
 function createOverlay(): HTMLDivElement {
+    const storyPlayerLinks = media.filter(m => m.type === 'amp-story');
+    const storyExtensionsLinks = media.filter(m => m.type !== 'amp-story');
+
     const overlayContainer = <HTMLDivElement>createElement({
         attributes: {
             class: 'overlay',
@@ -62,17 +66,19 @@ function createOverlay(): HTMLDivElement {
             zIndex: 3
         },
         innerHTML: `
-        <amp-story standalone
-            title="Storyflow AMP"
-            publisher="Storyflow">
-            ${media.map((media, index) => `
+        <amp-story-player id="storyflow-player" layout="responsive" width="100%" height="100%" controls autoplay>
+            <amp-story standalone
+                title="Storyflow AMP"
+                publisher="Storyflow">
+                ${storyExtensionsLinks.map((extensionStories, index) => `
                 <amp-story-page id="${index}">
                     <amp-story-grid-layer template="fill">
-                        ${generateStoryMarkUp(media)}
+                        ${generateStoryExtensionMarkUp(extensionStories)}
                     </amp-story-grid-layer>
-                </amp-story-page>`
-        )} 
-        </amp-story>
+                </amp-story-page>`)}
+            </amp-story>
+            ${storyPlayerLinks.map(stories => generateStoryExtensionMarkUp(stories))}
+        </amp-story-player>    
         `
     });
 

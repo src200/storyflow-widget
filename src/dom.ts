@@ -100,6 +100,16 @@ export function loadJS(src: string, doc: Document): void {
   doc.head.appendChild(script);
 }
 
+export function loadCSS(href: string, doc: Document): void {
+  doc = doc || document;
+  // DOM: Create the link element
+  var link = doc.createElement("link");
+  link.rel = "stylesheet";
+  link.href = href;
+  // finally insert the element to the head element in order to load the css
+  doc.head.appendChild(link);
+}
+
 function generateCTALink(url: string, text: string = 'Call to action'): string {
   return `<amp-story-cta-layer>
         <a href="${url}"
@@ -122,8 +132,12 @@ function generateCTALink(url: string, text: string = 'Call to action'): string {
       </amp-story-cta-layer>`;
 }
 
-// generate story markup based on media type
-export function generateStoryMarkUp(media: any): string {
+function generateStoryMarkup() {
+
+}
+
+// generate story extension markup based on media type
+export function generateStoryExtensionMarkUp(media: any): string {
   let storyMarkup = '';
 
   switch (media.type) {
@@ -185,13 +199,9 @@ export function generateStoryMarkUp(media: any): string {
       break;
     case 'amp-story':
       storyMarkup = `
-        <amp-story-player
-          layout="responsive"
-          width="480"
-          height="270">
-          <a href="${media.url}" />
-        </amp-story-player>
+        <a href="${media.url}" />
       `;
+      break;
     default:
       break;
   }
