@@ -1,5 +1,6 @@
 import { createElement, removeElementbyId, generateStoryExtensionMarkUp, loadJS, loadCSS, createImage } from './dom';
 import close from '../assets/close.svg';
+import storyflowImg from '../assets/storyflow.svg';
 
 interface Media {
     name: string,
@@ -23,8 +24,34 @@ async function getStories(): Promise<string[]> {
 const globalWrapper = <HTMLDivElement>createElement({
     attributes: {
         class: 'globalWrapper'
+    },
+    styles: {
+        position: 'absolute',
+        left: 0,
+        bottom: 0,
+        cursor: 'pointer',
+        width: '50px',
+        height: '50px',
+        padding: '1px',
+        margin: '10px',
+        boxShadow: '0px 8px 16px 0px',
+        borderRadius: '50%',
+        borderStyle: 'solid',
+        borderWidth: '2px',
+        borderColor: '#ff7e1d',
+        backgroundColor: '#F7EDDF',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    eventHandlers: {
+        click: (e: MouseEvent) => {
+            openStories();
+        }
     }
 });
+globalWrapper.appendChild(createImage(storyflowImg));
+
 
 const iframe = <HTMLIFrameElement>createElement({
     type: 'iframe',
@@ -39,11 +66,8 @@ const iframe = <HTMLIFrameElement>createElement({
         bottom: 0,
         left: 0,
         zIndex: 99999
-
     }
 });
-
-
 
 // create overlay
 function createOverlay(): HTMLDivElement {
@@ -126,68 +150,23 @@ function openStories(): void {
             }
         }
     });
+
     closeBtn.appendChild(createImage(close));
     overlay.appendChild(closeBtn);
-    globalWrapper.appendChild(overlay);
+    iframe.contentWindow && iframe.contentWindow.document.body.appendChild(overlay);
     iframe.width = '100%';
     iframe.height = '100%';
 }
 
 // start from here
 function init(): void {
-    const videoWrapper = <HTMLDivElement>createElement({
-        attributes: {
-            id: 'videoWrapper'
-        },
-        styles: {
-            position: 'fixed',
-            bottom: 0,
-            left: 0
-        }
-    });
-
-    // create video element on load
-    const video = <HTMLVideoElement>createElement({
-        type: 'video',
-        styles: {
-            position: 'relative',
-            cursor: 'pointer',
-            padding: '1px',
-            margin: '10px',
-            boxShadow: '0px 8px 20px 0px',
-            borderRadius: '50%',
-            borderStyle: 'solid',
-            borderWidth: '2px',
-            borderColor: '#ff7e1d',
-            backgroundColor: 'white',
-            objectFit: 'cover',
-            bottom: 0,
-            left: 2
-        },
-        attributes: {
-            id: 'video',
-            src: media[0].url,
-            height: '60',
-            width: '60'
-        },
-        eventHandlers: {
-            click: (e: MouseEvent) => {
-                openStories();
-            }
-        }
-    });
-    video.autoplay = true;
-    video.muted = true;
-    video.onloadedmetadata = e => video.play();
-    videoWrapper.appendChild(video);
-    globalWrapper.appendChild(videoWrapper);
-
     setTimeout(() => {
         if (iframe.contentWindow) {
             loadJS('https://cdn.ampproject.org/v0.js', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-story-1.0.js', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-video-0.1.js', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-youtube-0.1.js', iframe.contentWindow.document);
+            // loadCSS('https://cdn.ampproject.org/v0/amp-story-player-0.1.css', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-story-player-0.1.js', iframe.contentWindow.document);
             // loadJS('https://cdn.ampproject.org/v0/amp-instagram-0.1.js', iframe.contentWindow.document);
             // loadJS('https://cdn.ampproject.org/v0/amp-twitter-0.1.js', iframe.contentWindow.document);
@@ -195,7 +174,6 @@ function init(): void {
 
             // fix: https://groups.google.com/g/amphtml-discuss/c/88Kti6QNCLQ?pli=1
             iframe.contentWindow.document.write('<span></span>');
-
             iframe.contentWindow.document.body.appendChild(globalWrapper);
         }
     }, 0);
