@@ -183,6 +183,15 @@ export function generateStoryMarkUp(media: any): string {
         ${media.ctaLink && generateCTALink(media.ctaLink, media.ctaText)}
       `;
       break;
+    case 'amp-story':
+      storyMarkup = `
+        <amp-story-player
+          layout="responsive"
+          width="480"
+          height="270">
+          <a href="${media.url}" />
+        </amp-story-player>
+      `;
     default:
       break;
   }
