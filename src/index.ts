@@ -73,7 +73,6 @@ const iframe = <HTMLIFrameElement>createElement({
 function createOverlay(): HTMLDivElement {
     const storyPlayerLinks = media.filter(m => m.type === 'amp-story');
     const storyExtensionsLinks = media.filter(m => m.type !== 'amp-story');
-
     const overlayContainer = <HTMLDivElement>createElement({
         attributes: {
             class: 'overlay',
@@ -90,7 +89,6 @@ function createOverlay(): HTMLDivElement {
             zIndex: 3
         },
         innerHTML: `
-        <amp-story-player id="storyflow-player" layout="responsive" width="100%" height="100%" controls autoplay>
             <amp-story standalone
                 title="Storyflow AMP"
                 publisher="Storyflow">
@@ -101,8 +99,10 @@ function createOverlay(): HTMLDivElement {
                     </amp-story-grid-layer>
                 </amp-story-page>`)}
             </amp-story>
-            ${storyPlayerLinks.map(stories => generateStoryExtensionMarkUp(stories))}
-        </amp-story-player>    
+            <amp-story-player layout="fill">
+                ${storyPlayerLinks.map(stories => generateStoryExtensionMarkUp(stories))}
+            </amp-story-player>
+            
         `
     });
 
@@ -138,7 +138,7 @@ function openStories(): void {
             ...commonBtnProps.styles,
             position: 'absolute',
             margin: '10px',
-            top: 2,
+            top: 0,
             left: 0,
             zIndex: 50
         },
@@ -153,9 +153,19 @@ function openStories(): void {
 
     closeBtn.appendChild(createImage(close));
     overlay.appendChild(closeBtn);
-    iframe.contentWindow && iframe.contentWindow.document.body.appendChild(overlay);
-    iframe.width = '100%';
-    iframe.height = '100%';
+    setTimeout(() => {
+        iframe.width = '100%';
+        iframe.height = '100%';
+        iframe.contentWindow?.document.body.appendChild(overlay);
+    }, 10);
+
+    const playerEl = iframe.contentWindow?.document.querySelector('amp-story-player');
+    playerEl?.addEventListener('ready', () => {
+        console.log('Player is ready!!');
+        // iframe.contentWindow?.document.body.appendChild(overlay);
+    })
+
+
 }
 
 // start from here
@@ -166,8 +176,9 @@ function init(): void {
             loadJS('https://cdn.ampproject.org/v0/amp-story-1.0.js', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-video-0.1.js', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-youtube-0.1.js', iframe.contentWindow.document);
-            // loadCSS('https://cdn.ampproject.org/v0/amp-story-player-0.1.css', iframe.contentWindow.document);
+            // loadCSS('https://cdn.ampproject.org/amp-story-player-0.1.css', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-story-player-0.1.js', iframe.contentWindow.document);
+            loadJS('https://cdn.ampproject.org/v0/amp-carousel-0.1.js', iframe.contentWindow.document);
             // loadJS('https://cdn.ampproject.org/v0/amp-instagram-0.1.js', iframe.contentWindow.document);
             // loadJS('https://cdn.ampproject.org/v0/amp-twitter-0.1.js', iframe.contentWindow.document);
             // loadJS('https://cdn.ampproject.org/v0/amp-tiktok-0.1.js', iframe.contentWindow.document);
