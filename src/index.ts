@@ -1,4 +1,4 @@
-import { createElement, removeElementbyId, generateStoryExtensionMarkUp, loadJS, loadCSS, createImage } from './dom';
+import { createElement, removeElementbyId, loadJS, createImage } from './dom';
 import close from '../assets/close.svg';
 import storyflowImg from '../assets/storyflow.svg';
 
@@ -72,7 +72,16 @@ const iframe = <HTMLIFrameElement>createElement({
 // create overlay
 function createOverlay(): HTMLDivElement {
     const storyPlayerLinks = media.filter(m => m.type === 'amp-story');
-    const storyExtensionsLinks = media.filter(m => m.type !== 'amp-story');
+    // merge stories with preview link
+    storyPlayerLinks.push({
+        name: 'Storyflow',
+        description: 'Storyflow',
+        type: 'amp-story',
+        url: `https://storyflow.video/api/stories/preview?id=${storyPlayerLinks[0].user_id}`,
+        media_id: '',
+        user_id: ''
+    });
+
     const overlayContainer = <HTMLDivElement>createElement({
         attributes: {
             class: 'overlay',
@@ -89,20 +98,11 @@ function createOverlay(): HTMLDivElement {
             zIndex: 3
         },
         innerHTML: `
-            <amp-story standalone
-                title="Storyflow AMP"
-                publisher="Storyflow">
-                ${storyExtensionsLinks.map((extensionStories, index) => `
-                <amp-story-page id="${index}">
-                    <amp-story-grid-layer template="fill">
-                        ${generateStoryExtensionMarkUp(extensionStories)}
-                    </amp-story-grid-layer>
-                </amp-story-page>`)}
-            </amp-story>
-            <amp-story-player layout="fill">
-                ${storyPlayerLinks.map(stories => generateStoryExtensionMarkUp(stories))}
+            <amp-story-player layout="fill" >
+                ${storyPlayerLinks.map(stories => `
+                    <a href="${stories.url}" />
+                `)}
             </amp-story-player>
-            
         `
     });
 
@@ -153,19 +153,9 @@ function openStories(): void {
 
     closeBtn.appendChild(createImage(close));
     overlay.appendChild(closeBtn);
-    setTimeout(() => {
-        iframe.width = '100%';
-        iframe.height = '100%';
-        iframe.contentWindow?.document.body.appendChild(overlay);
-    }, 10);
-
-    const playerEl = iframe.contentWindow?.document.querySelector('amp-story-player');
-    playerEl?.addEventListener('ready', () => {
-        console.log('Player is ready!!');
-        // iframe.contentWindow?.document.body.appendChild(overlay);
-    })
-
-
+    iframe.width = '100%';
+    iframe.height = '100%';
+    iframe.contentWindow?.document.body.appendChild(overlay);
 }
 
 // start from here
@@ -173,15 +163,7 @@ function init(): void {
     setTimeout(() => {
         if (iframe.contentWindow) {
             loadJS('https://cdn.ampproject.org/v0.js', iframe.contentWindow.document);
-            loadJS('https://cdn.ampproject.org/v0/amp-story-1.0.js', iframe.contentWindow.document);
-            loadJS('https://cdn.ampproject.org/v0/amp-video-0.1.js', iframe.contentWindow.document);
-            loadJS('https://cdn.ampproject.org/v0/amp-youtube-0.1.js', iframe.contentWindow.document);
-            // loadCSS('https://cdn.ampproject.org/amp-story-player-0.1.css', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-story-player-0.1.js', iframe.contentWindow.document);
-            loadJS('https://cdn.ampproject.org/v0/amp-carousel-0.1.js', iframe.contentWindow.document);
-            // loadJS('https://cdn.ampproject.org/v0/amp-instagram-0.1.js', iframe.contentWindow.document);
-            // loadJS('https://cdn.ampproject.org/v0/amp-twitter-0.1.js', iframe.contentWindow.document);
-            // loadJS('https://cdn.ampproject.org/v0/amp-tiktok-0.1.js', iframe.contentWindow.document);
 
             // fix: https://groups.google.com/g/amphtml-discuss/c/88Kti6QNCLQ?pli=1
             iframe.contentWindow.document.write('<span></span>');
