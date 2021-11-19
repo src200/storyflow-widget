@@ -153,9 +153,11 @@ function openStories(): void {
 
     closeBtn.appendChild(createImage(close));
     overlay.appendChild(closeBtn);
-    iframe.width = '100%';
-    iframe.height = '100%';
-    iframe.contentWindow?.document.body.appendChild(overlay);
+    setTimeout(() => {
+        iframe.width = '100%';
+        iframe.height = '100%';
+        iframe.contentWindow?.document.body.appendChild(overlay);
+    }, 0);
 }
 
 // start from here
