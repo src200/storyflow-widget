@@ -16,7 +16,7 @@ let media: Media[] = [];
 async function getStories(): Promise<string[]> {
     const script = document.getElementById('storyflow-script');
     const user = script?.getAttribute("data-storyflow-user") || 'c9477f1b-ab00-40f9-8bd5-fe590fff1ddd';
-    const stories = await fetch(`https://storyflow.video/api/stories/preview?id=${user}`);
+    const stories = await fetch(`https://storyflow.video/api/stories/${user}`);
     return await stories.json();
 };
 
