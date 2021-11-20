@@ -77,7 +77,7 @@ function createOverlay(): HTMLDivElement {
         name: 'Storyflow',
         description: 'Storyflow',
         type: 'amp-story',
-        url: `https://storyflow.video/api/stories/preview?id=${storyPlayerLinks[0].user_id}`,
+        url: `https://f002.backblazeb2.com/file/storyflow/${storyPlayerLinks[0].user_id}.html`,
         media_id: '',
         user_id: ''
     });
