@@ -1,4 +1,4 @@
-import { createElement, removeElementbyId, loadJS, createImage } from './dom';
+import { createElement, removeElementbyId, loadJS, createImage, loadCSS } from './dom';
 import close from '../assets/close.svg';
 import storyflowImg from '../assets/storyflow.svg';
 
@@ -13,10 +13,13 @@ interface Media {
 
 let media: Media[] = [];
 
-async function getStories(): Promise<string[]> {
+function getUserId(): string {
     const script = document.getElementById('storyflow-script');
-    const user = script?.getAttribute("data-storyflow-user") || 'c9477f1b-ab00-40f9-8bd5-fe590fff1ddd';
-    const stories = await fetch(`https://storyflow.video/api/stories/${user}`);
+    return script?.getAttribute("data-storyflow-user") || 'c9477f1b-ab00-40f9-8bd5-fe590fff1ddd';
+}
+
+async function getStories(): Promise<string[]> {
+    const stories = await fetch(`https://storyflow.video/api/stories/${getUserId()}`);
     return await stories.json();
 };
 
@@ -39,7 +42,8 @@ const globalWrapper = <HTMLDivElement>createElement({
         borderStyle: 'solid',
         borderWidth: '2px',
         borderColor: '#ff7e1d',
-        backgroundColor: '#F7EDDF',
+        // backgroundColor: '#F7EDDF',
+        animation: 'pulse 1s infinite',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
@@ -77,11 +81,11 @@ function createOverlay(): HTMLDivElement {
         name: 'Storyflow',
         description: 'Storyflow',
         type: 'amp-story',
-        url: `https://f002.backblazeb2.com/file/storyflow/${storyPlayerLinks[0].user_id}.html`,
+        url: `https://f002.backblazeb2.com/file/storyflow/${getUserId()}.html`,
         media_id: '',
-        user_id: ''
+        user_id: getUserId()
     });
-
+    console.log(storyPlayerLinks);
     const overlayContainer = <HTMLDivElement>createElement({
         attributes: {
             class: 'overlay',
@@ -93,15 +97,13 @@ function createOverlay(): HTMLDivElement {
             left: 0,
             right: 0,
             bottom: 0,
-            minHeight: '480px',
-            minWidth: '270px',
             zIndex: 3
         },
         innerHTML: `
             <amp-story-player layout="fill" >
                 ${storyPlayerLinks.map(stories => `
-                    <a href="${stories.url}" />
-                `)}
+                    <a href="${stories.url}"></a>
+                `).join('')}
             </amp-story-player>
         `
     });
@@ -153,6 +155,7 @@ function openStories(): void {
 
     closeBtn.appendChild(createImage(close));
     overlay.appendChild(closeBtn);
+
     setTimeout(() => {
         iframe.width = '100%';
         iframe.height = '100%';
@@ -166,7 +169,6 @@ function init(): void {
         if (iframe.contentWindow) {
             loadJS('https://cdn.ampproject.org/v0.js', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-story-player-0.1.js', iframe.contentWindow.document);
-
             // fix: https://groups.google.com/g/amphtml-discuss/c/88Kti6QNCLQ?pli=1
             iframe.contentWindow.document.write('<span></span>');
             iframe.contentWindow.document.body.appendChild(globalWrapper);
