@@ -42,8 +42,6 @@ const globalWrapper = <HTMLDivElement>createElement({
         borderStyle: 'solid',
         borderWidth: '2px',
         borderColor: '#ff7e1d',
-        // backgroundColor: '#F7EDDF',
-        animation: 'pulse 1s infinite',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
@@ -85,7 +83,7 @@ function createOverlay(): HTMLDivElement {
         media_id: '',
         user_id: getUserId()
     });
-    console.log(storyPlayerLinks);
+
     const overlayContainer = <HTMLDivElement>createElement({
         attributes: {
             class: 'overlay',
@@ -167,6 +165,7 @@ function openStories(): void {
 function init(): void {
     setTimeout(() => {
         if (iframe.contentWindow) {
+            loadCSS('./index.css', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0.js', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-story-player-0.1.js', iframe.contentWindow.document);
             // fix: https://groups.google.com/g/amphtml-discuss/c/88Kti6QNCLQ?pli=1
