@@ -42,6 +42,7 @@ const globalWrapper = <HTMLDivElement>createElement({
         borderStyle: 'solid',
         borderWidth: '2px',
         borderColor: '#ff7e1d',
+        backgroundColor: '#fff',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
