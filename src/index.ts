@@ -165,7 +165,6 @@ function openStories(): void {
 function init(): void {
     setTimeout(() => {
         if (iframe.contentWindow) {
-            loadCSS('./index.css', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0.js', iframe.contentWindow.document);
             loadJS('https://cdn.ampproject.org/v0/amp-story-player-0.1.js', iframe.contentWindow.document);
             // fix: https://groups.google.com/g/amphtml-discuss/c/88Kti6QNCLQ?pli=1
